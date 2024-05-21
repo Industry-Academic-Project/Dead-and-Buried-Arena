@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
@@ -25,6 +26,18 @@ namespace Server
             PhotonNetwork.SerializationRate = 60;
         }
 
+        private void Start()
+        {
+            PhotonNetwork.GameVersion = "1";
+            PhotonNetwork.ConnectUsingSettings();
+        }
+
+        private IEnumerator Wait()
+        {
+            yield return new WaitForSeconds(1f);
+            PhotonNetwork.JoinRandomRoom();
+        }
+
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsConnected)
@@ -40,9 +53,20 @@ namespace Server
         public override void OnConnectedToMaster()
         {
             Debug.Log("마스터 서버 접속 완료");
+            if (PhotonNetwork.IsConnected)
+            {
+                Debug.Log("PhotonNetwork.IsConnected: true");
+                PhotonNetwork.JoinLobby();
+            }
+            
+            // PhotonNetwork.LocalPlayer.NickName = nicknameInput.text;
+            // PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions() { MaxPlayers = 6 }, null);
+        }
 
-            PhotonNetwork.LocalPlayer.NickName = nicknameInput.text;
-            PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions() { MaxPlayers = 6 }, null);
+        public override void OnJoinedLobby()
+        {
+            print(nameof(OnJoinedLobby));
+            PhotonNetwork.JoinRandomRoom();
         }
 
         public override void OnCreatedRoom()
@@ -53,11 +77,20 @@ namespace Server
         public override void OnJoinedRoom()
         {
             Debug.Log("방에 참가하는 데 성공했습니다.");
+            PhotonNetwork.LoadLevel("VRTutorial");
 
-            disconnectPanel.SetActive(false);
-            Spawn();
+            // disconnectPanel.SetActive(false);
+            // Spawn();
         }
- 
+
+        public override void OnJoinRandomFailed(short returnCode, string message)
+        {
+            Debug.Log($"{message}: 방을 참가하는 데 실패했습니다.");
+            PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = 4 });
+            
+            Debug.LogWarning(PhotonNetwork.CurrentRoom.Name);
+        }
+
         public override void OnCreateRoomFailed(short returnCode, string message)
         {
             Debug.Log($"{message}: 방을 만드는 데 실패했습니다.");
@@ -66,12 +99,16 @@ namespace Server
         public override void OnJoinRoomFailed(short returnCode, string message)
         {
             Debug.Log($"{message}: 방을 참가하는 데 실패했습니다.");
+            PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = 4 });
+            
+            Debug.LogWarning(PhotonNetwork.CurrentRoom.Name);
         }
 
         public override void OnDisconnected(DisconnectCause cause)
         {
-            disconnectPanel.SetActive(true);
-            respawnPanel.SetActive(false);
+            Debug.LogWarning("연결이 끊겼습니다.");
+            // disconnectPanel.SetActive(true);
+            // respawnPanel.SetActive(false);
         }
 
         #endregion
@@ -89,8 +126,8 @@ namespace Server
 
         public void Spawn()
         {
-            PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
-            respawnPanel.SetActive(false);
+            // PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
+            // respawnPanel.SetActive(false);
         }
 
         public void JoinLobby()
