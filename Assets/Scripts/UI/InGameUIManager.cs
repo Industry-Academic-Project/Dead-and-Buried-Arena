@@ -14,7 +14,7 @@ public class InGameUIManager : MonoBehaviour
         win.SetActive(false);
         lose.SetActive(false);
         Time.timeScale = 1;
-        second = 0;
+        second = 240;
         StartCoroutine(GameStart());
     }
 
@@ -32,8 +32,6 @@ public class InGameUIManager : MonoBehaviour
 
     private IEnumerator GameStart()
     {
-        second = 30f;
-
         while (second > 0)
         {
             second -= Time.deltaTime;
