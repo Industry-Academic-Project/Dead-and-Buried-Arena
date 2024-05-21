@@ -12,9 +12,12 @@ namespace Server
     public class NetworkManager : MonoBehaviourPunCallbacks
     {
         public string roomName = "Room1";
+        
+        ///////// not currently using /////////
         public InputField nicknameInput;
         public GameObject disconnectPanel;
         public GameObject respawnPanel;
+        //////////////// end //////////////////
         
         #region Unity Event Functions
         private void Awake()
@@ -22,16 +25,19 @@ namespace Server
     #if UNITY_STANDALONE
             Screen.SetResolution(960, 540, false);
     #endif
+            // 전송 속도 및 직렬화 속도 조정
             PhotonNetwork.SendRate = 60;
             PhotonNetwork.SerializationRate = 60;
         }
 
         private void Start()
         {
+            // 시작하자마자 자동으로 접속, OnConnectedToMaster 함수 실행
             PhotonNetwork.GameVersion = "1";
             PhotonNetwork.ConnectUsingSettings();
         }
 
+        // 재접속 딜레이
         private IEnumerator Wait()
         {
             yield return new WaitForSeconds(1f);
@@ -40,6 +46,7 @@ namespace Server
 
         void Update()
         {
+            // 연결 해제, 사용되지 않음
             if (Input.GetKeyDown(KeyCode.Escape) && PhotonNetwork.IsConnected)
             {
                 PhotonNetwork.Disconnect();
@@ -56,7 +63,7 @@ namespace Server
             if (PhotonNetwork.IsConnected)
             {
                 Debug.Log("PhotonNetwork.IsConnected: true");
-                PhotonNetwork.JoinLobby();
+                PhotonNetwork.JoinRandomRoom();
             }
             
             // PhotonNetwork.LocalPlayer.NickName = nicknameInput.text;
@@ -137,7 +144,7 @@ namespace Server
 
         public void CreateRoom()
         {
-            PhotonNetwork.CreateRoom(roomName, new RoomOptions() { MaxPlayers = 2 });
+            PhotonNetwork.CreateRoom(roomName, new RoomOptions() { MaxPlayers = 4 });
         }
 
         public void JoinRoom()
@@ -147,7 +154,7 @@ namespace Server
 
         public void JoinOrCreateRoom()
         {
-            PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions() { MaxPlayers = 2 }, null);
+            PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions() { MaxPlayers = 4 }, null);
         }
 
         public void JoinRandomRoom()
