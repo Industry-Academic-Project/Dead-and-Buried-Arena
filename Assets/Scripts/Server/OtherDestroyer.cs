@@ -10,7 +10,7 @@ namespace Server
     {
         [SerializeField] private bool destroyGameObject;
         [SerializeField] private List<Component> destroyList;
-        private PhotonView pView;
+        public PhotonView pView;
         private void OnValidate()
         {
             if (destroyGameObject)
@@ -22,8 +22,6 @@ namespace Server
         
         private void Start()
         {
-            pView = transform.parent.GetComponentInChildren<PhotonView>();
-
             if (pView.IsMine)
                 return;
             

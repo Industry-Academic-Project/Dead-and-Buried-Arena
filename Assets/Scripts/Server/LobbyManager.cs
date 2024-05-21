@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.XR.Management;
 
@@ -13,13 +14,13 @@ namespace Server
     {
         public const string GameVersion = "1";
         [SerializeField] private string sceneNameToJoin;
-        [SerializeField] private Button JoinGameBtn;
+        [SerializeField] private Button joinGameBtn;
         [SerializeField] private Text networkStatus;
 
         private void Start()
         {
             PhotonNetwork.GameVersion = GameVersion;
-            JoinGameBtn.interactable = false;
+            joinGameBtn.interactable = false;
 
             networkStatus.text = "마스터 서버에 접속 중입니다...";
             PhotonNetwork.ConnectUsingSettings();
@@ -28,7 +29,7 @@ namespace Server
         public override void OnDisconnected(DisconnectCause cause)
         {
             // ConnectUsingSettings() 실패
-            JoinGameBtn.interactable = false;
+            joinGameBtn.interactable = false;
             
             Debug.LogWarning(cause);
             networkStatus.text = "연결에 실패했습니다.\n재접속 중입니다...";
@@ -47,14 +48,14 @@ namespace Server
         public override void OnConnectedToMaster()
         {
             // 룸 접속 버튼 활성화
-            JoinGameBtn.interactable = true;
+            joinGameBtn.interactable = true;
             networkStatus.text = "마스터 서버와 연결되었습니다.";
         }
 
         public void TryConnect()
         {
             // 게임 접속 가능
-            JoinGameBtn.interactable = true;
+            joinGameBtn.interactable = true;
             
             // 마스터 서버에 접속 중
             if (PhotonNetwork.IsConnected)
