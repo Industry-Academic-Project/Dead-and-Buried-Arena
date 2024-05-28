@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Lobby.unity
     guid: 84db9a01c3841104ca712c211e290c44
   - enabled: 1
-    path: Assets/Scenes/VRTutorial.unity
+    path: Assets/Scenes/VRTutorial_Fallback.unity
     guid: 085cc62007a6d6c41b5e1de4e891390b
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 02717da590fd53b4c9ee3f828c192076, type: 2}

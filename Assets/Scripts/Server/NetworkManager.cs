@@ -84,7 +84,7 @@ namespace Server
         public override void OnJoinedRoom()
         {
             Debug.Log("방에 참가하는 데 성공했습니다.");
-            PhotonNetwork.LoadLevel("VRTutorial");
+            PhotonNetwork.LoadLevel("VRTutorial_Fallback");
 
             // disconnectPanel.SetActive(false);
             // Spawn();

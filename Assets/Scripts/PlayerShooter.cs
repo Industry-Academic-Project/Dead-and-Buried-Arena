@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
 public class PlayerShooter : MonoBehaviourPun
@@ -13,16 +14,20 @@ public class PlayerShooter : MonoBehaviourPun
     public Transform lFirePosition;
 
     [SerializeField] private float maxHealth = 100f;
-    private float currHealth;
+    private float _currHealth;
 
     public GameObject onDeathCanvas;
+    public GameObject ovrCamera;
+    
 
     // Start is called before the first frame update
     private void Start()
     {
+        // 캐릭터가 IsMine일 경우에만 활성화
+        ovrCamera.SetActive(photonView.IsMine);
         if (!photonView.IsMine) return;
 
-        currHealth = maxHealth;
+        _currHealth = maxHealth;
         
         
         // StartCoroutine(DelayedFire());
@@ -56,13 +61,13 @@ public class PlayerShooter : MonoBehaviourPun
     [PunRPC]
     public void GetDamageRPC(float damage)
     {
-        currHealth -= damage;
-        if (currHealth <= 0)
+        _currHealth -= damage;
+        if (_currHealth <= 0)
         {
             // dead
             Debug.Log("Dead!");
             StartCoroutine(ShowDead());
-            currHealth = maxHealth;
+            _currHealth = maxHealth;
         }
     }
 
