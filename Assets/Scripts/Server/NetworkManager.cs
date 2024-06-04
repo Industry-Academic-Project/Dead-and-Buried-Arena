@@ -6,6 +6,7 @@ using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Random = System.Random;
 
 namespace Server
 {
@@ -63,27 +64,40 @@ namespace Server
             if (PhotonNetwork.IsConnected)
             {
                 Debug.Log("PhotonNetwork.IsConnected: true");
-                PhotonNetwork.JoinRandomRoom();
+                
+                // 마스터 서버 접속 직후 랜덤한 원래 있는 방에 들어가거나 Range로 생성된 정수를 사용해 방을 생성한다.
+                print(nameof(OnJoinedLobby));
+                PhotonNetwork.JoinRandomOrCreateRoom(
+                    null,
+                    4,
+                    MatchmakingMode.FillRoom,
+                    null,
+                    null,
+                    UnityEngine.Random.Range(0, 1000).ToString(),
+                    new RoomOptions() { MaxPlayers = 4 });
+                
+                // PhotonNetwork.JoinOrCreateRoom(UnityEngine.Random.Range(0, 1000).ToString(),
+                //     new RoomOptions() { MaxPlayers = 4 }, null);
             }
             
             // PhotonNetwork.LocalPlayer.NickName = nicknameInput.text;
             // PhotonNetwork.JoinOrCreateRoom(roomName, new RoomOptions() { MaxPlayers = 6 }, null);
         }
-
+        
         public override void OnJoinedLobby()
         {
-            print(nameof(OnJoinedLobby));
-            PhotonNetwork.JoinRandomRoom();
+            Debug.LogWarning("로비 접속 성공");
+           
         }
 
         public override void OnCreatedRoom()
         {
-            Debug.Log("새로운 방이 생성되었습니다.");
+            Debug.Log("새로운 방이 생성되었습니다. 방 이름: " + PhotonNetwork.CurrentRoom.Name);
         }
 
         public override void OnJoinedRoom()
         {
-            Debug.Log("방에 참가하는 데 성공했습니다.");
+            Debug.Log("방에 참가하는 데 성공했습니다. 방 이름: " + PhotonNetwork.CurrentRoom.Name);
             PhotonNetwork.LoadLevel("VRTutorial_Fallback");
 
             // disconnectPanel.SetActive(false);
@@ -92,10 +106,11 @@ namespace Server
 
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
-            Debug.Log($"{message}: 방을 참가하는 데 실패했습니다.");
-            PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = 4 });
-            
-            Debug.LogWarning(PhotonNetwork.CurrentRoom.Name);
+            Debug.Log($"{message}: OnJoinRandom으로 방을 참가하는 데 실패했습니다.");
+
+            // string roomName = UnityEngine.Random.Range(0, 1000).ToString();
+            // PhotonNetwork.CreateRoom(roomName, new RoomOptions() { MaxPlayers = 4 });
+            // Debug.LogWarning(roomName);
         }
 
         public override void OnCreateRoomFailed(short returnCode, string message)
