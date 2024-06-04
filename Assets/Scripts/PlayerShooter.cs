@@ -24,7 +24,7 @@ public class PlayerShooter : MonoBehaviourPun
     private void Start()
     {
         // 캐릭터가 IsMine일 경우에만 활성화
-        ovrCamera.SetActive(photonView.IsMine);
+        // ovrCamera.SetActive(photonView.IsMine);
         if (!photonView.IsMine) return;
 
         _currHealth = maxHealth;
