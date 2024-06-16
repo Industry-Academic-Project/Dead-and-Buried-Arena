@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 namespace Server
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         public GameObject playerPrefab;
         private static GameManager _instance;
@@ -50,6 +50,18 @@ namespace Server
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 PhotonNetwork.LeaveRoom();
+            }
+        }
+
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if (stream.IsWriting)
+            {
+                // stream.SendNext(뭐시기);
+            }
+            else
+            {
+                // 뭐시기 = (뭐시기타입)stream.ReceiveNext();
             }
         }
     }
